@@ -1,21 +1,35 @@
 import pytest
+from account import *
 
-from account import account
+class Test:
+    def setup_method(self):
+        self.testaccount = Account("test")
 
-def test_init():
+    def tear_down_method(self):
+        del self.testaccount
 
-  acc1=account("Uma")
-  assert acc1.gername()=="Uma"
-  assert acc1.getbalance()==0
 
-def test_deposit():
+    def test_init(self):
+        assert self.testaccount.get_name() == "test"
+        assert self.testaccount.get_balance() == pytest.approx(0)
 
-  acc1=account("Uma")
-  acc1.deposit(20)
-  assert acc1.getbalance()==20
 
-def test_withdraw():
-  acc1=account("Uma")
-  acc1.deposit(100)
-  acc1.withdraw(20)
-  assert acc1.getbalance()==80
+    def test_deposit(self):
+        assert self.testaccount.deposit(-5) is False
+        assert self.testaccount.get_balance() == pytest.approx(0)
+        assert self.testaccount.deposit(0) is False
+        assert self.testaccount.get_balance() == pytest.approx(0)
+        assert self.testaccount.deposit(50) is True
+        assert self.testaccount.get_balance() == pytest.approx(50)
+
+
+    def test_withdraw(self):
+        assert self.testaccount.withdraw(-5) is False
+        assert self.testaccount.get_balance() == pytest.approx(0)
+        assert self.testaccount.withdraw(0) is False
+        assert self.testaccount.get_balance() == pytest.approx(0)
+        assert self.testaccount.withdraw(50) is False
+        assert self.testaccount.get_balance() == pytest.approx(0)
+        self.testaccount.deposit(100)
+        assert self.testaccount.withdraw(50) is True
+        assert self.testaccount.get_balance() == pytest.approx(50)
